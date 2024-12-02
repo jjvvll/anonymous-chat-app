@@ -1,18 +1,17 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Models\Username;
+use App\Models\PublicRoom;
 use Illuminate\Http\Request;
 
-class UsernameController extends Controller
+class PublicRoomController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+       // return view('public_rooms.index');
     }
 
     /**
@@ -20,7 +19,7 @@ class UsernameController extends Controller
      */
     public function create()
     {
-        return view('usernames.create');
+        return view('public_rooms.create');
     }
 
     /**
@@ -28,15 +27,16 @@ class UsernameController extends Controller
      */
     public function store()
     {
+       // Call the query scope to generate a unique public room name
+       $roomName = PublicRoom::generateUniquePublicRoom();  // Directly call the scope method
 
-       $username = Username::GenerateUniqueUsername();  // Directly call the scope method
-
-       $publicUsername = Username::create([
-           'username' => $username, // Assuming 'name' is the column where the room name is saved
+       // Create a new public room with the generated name
+       $publicRoom = PublicRoom::create([
+           'publicRoom' => $roomName, // Assuming 'name' is the column where the room name is saved
        ]);
 
         // Redirect back with a success message
-        return redirect()->route('index')->with('success', 'Username  Generated: ' . $publicUsername->username);
+        return redirect()->route('usernames.create')->with('success', 'Public Room Generated: ' . $publicRoom->publicRoom);
     }
 
     /**

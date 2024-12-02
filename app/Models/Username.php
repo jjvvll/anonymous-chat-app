@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Str;
 
 class Username extends Model
 {
@@ -15,19 +16,16 @@ class Username extends Model
     public function scopeGenerateUniqueUsername(Builder $query, $length = 10)
     {
         // Generate a random username
-        $randomUsername = \Illuminate\Support\Str::random($length);
+        $randomUsername = Str::random($length);
 
-        // Ensure the generated username is unique
+        // Ensure the generated room name is unique
         while ($query->where('username', $randomUsername)->exists()) {
-            $randomUsername = \Illuminate\Support\Str::random($length); // Generate a new one if it already exists
+            // Regenerate the room name if it already exists
+            $randomUsername = Str::random($length);
         }
 
+        // Return the unique room name
         return $randomUsername;
     }
 
-    public function scopeHasDuplicate(Builder $query, $username)
-    {
-        // Check if the given username already exists in the table
-        return $query->where('username', $username)->exists();
-    }
 }
