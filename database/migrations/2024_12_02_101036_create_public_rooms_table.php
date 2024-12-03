@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('public_rooms', function (Blueprint $table) {
             $table->id();
             $table->string('publicRoom')->unique(); // Adds the 'username' column with a unique constraint
+            $table->string('nickname')->nullable(); // Add nickname column
             $table->timestamps();
         });
     }
