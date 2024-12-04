@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('publicRoom')->unique(); // Adds the 'username' column with a unique constraint
             $table->string('nickname')->nullable(); // Add nickname column
+            $table->string('owner')->nullable(); // Add owner column here
             $table->timestamps();
         });
     }

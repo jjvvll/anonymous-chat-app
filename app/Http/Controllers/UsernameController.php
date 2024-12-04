@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Username;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
+
 
 class UsernameController extends Controller
 {
@@ -35,9 +37,20 @@ class UsernameController extends Controller
            'username' => $username, // Assuming 'name' is the column where the room name is saved
        ]);
 
+       session(['username' => $username]); // sotre the session here
+
         // Redirect back with a success message
-        return redirect()->route('index')->with('success', 'Username  Generated: ' . $publicUsername->username);
-    }
+        if (Session::has('join') && session('join') === true) {
+            // Set 'join' to false if it's true
+            session(['join' => false]);
+
+            // Redirect to public_rooms.index
+            return redirect()->route('public_rooms.index')->with('success', 'Username Generated: ' . $publicUsername->username);
+        } else {
+            // Redirect to public_rooms.create if 'join' is not true
+            return redirect()->route('public_rooms.create')->with('success', 'Username Generated: ' . $publicUsername->username);
+        }
+            }
 
     /**
      * Display the specified resource.

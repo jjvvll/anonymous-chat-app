@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 use App\Models\PublicRoom;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
+use App\Models\Username;
 
 class PublicRoomController extends Controller
 {
@@ -11,7 +13,8 @@ class PublicRoomController extends Controller
      */
     public function index()
     {
-       // return view('public_rooms.index');
+        $publicRooms = PublicRoom::all(); // Fetch all public rooms
+        return view('public_rooms.index', compact('publicRooms'));
     }
 
     /**
@@ -25,18 +28,36 @@ class PublicRoomController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store()
+    public function store(Request $request)
     {
+
+        $validatedData = $request->validate([
+            'nickname' => 'nullable|string|max:255',
+        ]);
+
+
        // Call the query scope to generate a unique public room name
        $roomName = PublicRoom::generateUniquePublicRoom();  // Directly call the scope method
+
+
+    // Fetch the username from session
+        $username = $request->session()->get('username');
+
+        // Check if username exists in session
+        if (!$username) {
+            // Handle the case where username is not found in the session
+            return redirect()->route('usernames.create')->with('error', 'No username found in session.');
+        }
 
        // Create a new public room with the generated name
        $publicRoom = PublicRoom::create([
            'publicRoom' => $roomName, // Assuming 'name' is the column where the room name is saved
-       ]);
+           'nickname' => $validatedData['nickname'] ?? null, // Save the nickname if provided
+            'owner'      => $username, // Use the fetched username as the owner
+        ]);
 
         // Redirect back with a success message
-        return redirect()->route('usernames.create')->with('success', 'Public Room Generated: ' . $publicRoom->publicRoom);
+        return redirect()->route('public_rooms.index')->with('success', 'Username Generated: ' . $username);
     }
 
     /**
@@ -44,7 +65,8 @@ class PublicRoomController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $publicRoom = PublicRoom::findOrFail($id);
+        return view('public_rooms.show', compact('publicRoom'));
     }
 
     /**
@@ -66,8 +88,35 @@ class PublicRoomController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(PublicRoom $publicRoom)
     {
-        //
+
+         // Ensure the user is the owner of the room
+    if ($publicRoom->owner === Session::get('username')) {
+        // Delete the public room
+        $publicRoom->delete();
+
+        // Delete the username associated with the owner (without relationship)
+        Username::where('username', $publicRoom->owner)->delete();
+
+        return redirect()->route('public_rooms.index')->with('success', 'Public Room and Username deleted successfully.');
     }
+
+    return redirect()->route('public-rooms.index')->with('error', 'You are not the owner of this room.');
+    }
+
+    public function setJoinSession()
+    {
+        // Set the session variable 'join' to true
+        session(['join' => true]);
+
+        // Check if the user has a 'username', redirect accordingly
+        if (Session::has('username')) {
+            session(['join' => false]); // set join to false
+            return redirect()->route('public_rooms.index');
+        }
+
+        return redirect()->route('usernames.create');
+    }
+
 }

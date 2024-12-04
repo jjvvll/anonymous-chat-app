@@ -11,7 +11,7 @@ class PublicRoom extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['publicRoom'];
+    protected $fillable = ['publicRoom', 'nickname', 'owner'];
 
     public function scopeGenerateUniquePublicRoom(Builder $query, $length = 10)
     {

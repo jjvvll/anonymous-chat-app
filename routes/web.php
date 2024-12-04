@@ -12,3 +12,5 @@ Route::get('/', function () {
 Route::resource('/public_rooms',PublicRoomController::class);
 
 Route::resource('/usernames',UsernameController::class);
+
+Route::get('/set-join-session', [PublicRoomController::class, 'setJoinSession'])->name('setJoinSession');
