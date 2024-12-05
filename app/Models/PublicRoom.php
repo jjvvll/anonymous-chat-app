@@ -13,6 +13,11 @@ class PublicRoom extends Model
 
     protected $fillable = ['publicRoom', 'nickname', 'owner'];
 
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
+
     public function scopeGenerateUniquePublicRoom(Builder $query, $length = 10)
     {
         // Generate a random room name of the specified length
