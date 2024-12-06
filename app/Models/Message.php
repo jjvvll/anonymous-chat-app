@@ -11,5 +11,6 @@ class Message extends Model
     public function publicRoom()
     {
         return $this->belongsTo(PublicRoom::class);
+        //
     }
 }

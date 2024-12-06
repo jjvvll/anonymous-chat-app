@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
+            $table->text('message'); // For storing the message content
+            $table->foreignId('publicRoom_id')->constrained('public_rooms')->onDelete('cascade'); // Foreign key reference
+            $table->string('sender'); // For storing the sender's username or identifier
             $table->timestamps();
         });
     }
