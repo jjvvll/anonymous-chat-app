@@ -18,6 +18,10 @@ class PublicRoom extends Model
         return $this->hasMany(Message::class);
     }
 
+    public function scopeCheckDuplicate(Builder $query, string $nickname): Builder{
+        return $query->where('nickname', '=', $nickname);
+    }
+
     public function scopeGenerateUniquePublicRoom(Builder $query, $length = 10)
     {
         // Generate a random room name of the specified length

@@ -28,16 +28,28 @@ class UsernameController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store()
+    public function store(Request $request)
     {
 
-       $username = Username::GenerateUniqueUsername();  // Directly call the scope method
+        $request->validate([
+         'username' => 'required|string|max:255',
+         ]);
 
-       $publicUsername = Username::create([
-           'username' => $username, // Assuming 'name' is the column where the room name is saved
+        $duplicate = Username::when($request->username, function ($query) use ($request) {
+            return $query->CheckDuplicate($request->username);
+        })->exists();
+
+        if ($duplicate) {
+            // Handle the case where the username already exists
+            return redirect()->back()->withErrors(['username' => 'Username is already taken.']);
+        }
+
+
+       Username::create([
+           'username' => $request->username, // Assuming 'name' is the column where the room name is saved
        ]);
 
-       session(['username' => $username]); // sotre the session here
+       session(['username' => $request->username]); // store the session here
 
         // Redirect back with a success message
         if (Session::has('join') && session('join') === true) {
@@ -45,10 +57,10 @@ class UsernameController extends Controller
             session(['join' => false]);
 
             // Redirect to public_rooms.index
-            return redirect()->route('public_rooms.index')->with('success', 'Username Generated: ' . $publicUsername->username);
+            return redirect()->route('public_rooms.index')->with('success', 'Username Generated: ' . $request->username);
         } else {
             // Redirect to public_rooms.create if 'join' is not true
-            return redirect()->route('public_rooms.create')->with('success', 'Username Generated: ' . $publicUsername->username);
+            return redirect()->route('public_rooms.create')->with('success', 'Username Generated: ' . $request->username);
         }
             }
 

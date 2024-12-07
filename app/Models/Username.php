@@ -13,6 +13,9 @@ class Username extends Model
 
     protected $fillable = ['username'];
 
+    public function scopeCheckDuplicate(Builder $query, string $username): Builder{
+        return $query->where('username', '=', $username);
+    }
     public function scopeGenerateUniqueUsername(Builder $query, $length = 10)
     {
         // Generate a random username

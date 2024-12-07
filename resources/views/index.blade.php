@@ -25,17 +25,10 @@
 
 
 <div class="mb-4">
-    @if(Session::has('username'))
         <!-- Link to set the session 'join' to true and redirect to public rooms index -->
         <a href="{{ route('setJoinSession') }}" class="reset-link">
             Join a public room!
         </a>
-    @else
-        <!-- Link to set the session 'join' to true and redirect to usernames.create -->
-        <a href="{{ route('setJoinSession') }}" class="reset-link">
-            Join a public room!
-        </a>
-    @endif
 </div>
 
 

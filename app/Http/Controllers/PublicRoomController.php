@@ -31,13 +31,9 @@ class PublicRoomController extends Controller
     public function store(Request $request)
     {
 
-        $validatedData = $request->validate([
-            'nickname' => 'nullable|string|max:255',
-        ]);
-
 
        // Call the query scope to generate a unique public room name
-       $roomName = PublicRoom::generateUniquePublicRoom();  // Directly call the scope method
+       //$roomName = PublicRoom::generateUniquePublicRoom();  // Directly call the scope method
 
 
     // Fetch the username from session
@@ -49,10 +45,24 @@ class PublicRoomController extends Controller
             return redirect()->route('usernames.create')->with('error', 'No username found in session.');
         }
 
+
+        $request->validate([
+            'nickname' => 'nullable|string|max:255',
+        ]);
+
+        $isDuplicate = PublicRoom::when($request->nickname, function ($query) use ($request) {
+            return $query->CheckDuplicate($request->nickname);
+        })->exists();
+
+
+        if ($isDuplicate) {
+            // Handle the case where the username already exists
+            return redirect()->back()->withErrors(['nickname' => 'Nickname is already taken.']);
+        }
+
        // Create a new public room with the generated name
-       $publicRoom = PublicRoom::create([
-           'publicRoom' => $roomName, // Assuming 'name' is the column where the room name is saved
-           'nickname' => $validatedData['nickname'] ?? null, // Save the nickname if provided
+       PublicRoom::create([
+           'nickname' => $request->nickname, // Save the nickname if provided
             'owner'      => $username, // Use the fetched username as the owner
         ]);
 
@@ -66,7 +76,10 @@ class PublicRoomController extends Controller
     public function show(string $id)
     {
         $publicRoom = PublicRoom::findOrFail($id);
-        return view('public_rooms.show', compact('publicRoom'));
+
+        $messages = $publicRoom->messages()->latest()->get() ?? collect();
+
+        return view('public_rooms.show', compact('publicRoom', 'messages'));
     }
 
     /**
