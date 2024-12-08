@@ -23,6 +23,12 @@
     @endif
 </div>
 
+<div class="mb-4">
+    <a href="{{ route('private_rooms.create') }}" class="reset-link">
+        Create a private room!
+    </a>
+</div>
+
 
 <div class="mb-4">
         <!-- Link to set the session 'join' to true and redirect to public rooms index -->
