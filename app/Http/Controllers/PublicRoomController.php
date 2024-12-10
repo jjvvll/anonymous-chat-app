@@ -110,9 +110,9 @@ class PublicRoomController extends Controller
         $publicRoom->delete();
 
         // Delete the username associated with the owner (without relationship)
-        Username::where('username', $publicRoom->owner)->delete();
+       // Username::where('username', $publicRoom->owner)->delete();
 
-        return redirect()->route('public_rooms.index')->with('success', 'Public Room and Username deleted successfully.');
+        return redirect()->route('public_rooms.index')->with('success', 'Public Room deleted successfully.');
     }
 
     return redirect()->route('public-rooms.index')->with('error', 'You are not the owner of this room.');

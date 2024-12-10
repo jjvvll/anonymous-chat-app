@@ -17,24 +17,45 @@
             Create a public room!
         </a>
     @else
-        <a href="{{ route('usernames.create') }}" class="reset-link">
+        <a href="{{ route('usernames.create', ['room_type' => 'public', 'action_type' => 'create']) }}" class="reset-link">
             Create a public room!
         </a>
     @endif
 </div>
 
 <div class="mb-4">
+    @if(Session::has('username'))
     <a href="{{ route('private_rooms.create') }}" class="reset-link">
         Create a private room!
     </a>
+@else
+    <a href="{{ route('usernames.create', ['room_type' => 'private', 'action_type' => 'create']) }}" class="reset-link">
+        Create a private room!
+    </a>
+@endif
 </div>
 
 
 <div class="mb-4">
-        <!-- Link to set the session 'join' to true and redirect to public rooms index -->
-        <a href="{{ route('setJoinSession') }}" class="reset-link">
+
+    @if(Session::has('username'))
+        <a href="{{ route('public_rooms.index') }}" class="reset-link">
             Join a public room!
         </a>
+        <a href="{{ route('private_rooms.index') }}" class="reset-link">
+            Join a private room!
+        </a>
+    @else
+        <a href="{{ route('usernames.create', ['room_type' => 'private', 'action_type' => 'join']) }}" class="reset-link">
+            Join a private room!
+        </a>
+        <a href="{{ route('usernames.create', ['room_type' => 'public', 'action_type' => 'join']) }}" class="reset-link">
+            Join a public room!
+        </a>
+    @endif
+
+
+
 </div>
 
 

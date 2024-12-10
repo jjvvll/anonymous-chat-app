@@ -16,7 +16,10 @@ Route::resource('/public_rooms',PublicRoomController::class);
 
 Route::resource('/private_rooms',PrivateRoomController::class);
 
-Route::resource('/usernames',UsernameController::class);
+Route::resource('/usernames',controller: UsernameController::class);
+
+Route::get('/usernames/create/{room_type}/{action_type}', [UsernameController::class, 'create'])
+    ->name('usernames.create');
 
 Route::get('/set-join-session', [PublicRoomController::class, 'setJoinSession'])->name('setJoinSession');
 

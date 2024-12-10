@@ -51,18 +51,26 @@ class UsernameController extends Controller
 
        session(['username' => $request->username]); // store the session here
 
-        // Redirect back with a success message
-        if (Session::has('join') && session('join') === true) {
-            // Set 'join' to false if it's true
-            session(['join' => false]);
 
-            // Redirect to public_rooms.index
-            return redirect()->route('public_rooms.index')->with('success', 'Username Generated: ' . $request->username);
-        } else {
-            // Redirect to public_rooms.create if 'join' is not true
-            return redirect()->route('public_rooms.create')->with('success', 'Username Generated: ' . $request->username);
-        }
+            if($request->room_type === 'public' && $request->action_type === 'create'){
+                return redirect()->route('public_rooms.create')->with('success', 'Username Generated: ' . $request->username);
             }
+            else if($request->room_type === 'private' && $request->action_type === 'create')
+            {
+                return redirect()->route('private_rooms.create')->with('success', 'Username Generated: ' . $request->username);
+            }
+            else if($request->room_type === 'public' && $request->action_type === 'join'){
+                return redirect()->route('public_rooms.index')->with('success', 'Username Generated: ' . $request->username);
+            }
+            else if($request->room_type === 'private' && $request->action_type === 'join')
+            {
+                return redirect()->route('private_rooms.index')->with('success', 'Username Generated: ' . $request->username);
+            }
+            else{
+                return redirect()->route('index');
+            }
+
+    }
 
     /**
      * Display the specified resource.

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PrivateMessage;
+use App\Models\PrivateRoom;
 use Illuminate\Http\Request;
 
 class PrivateMessageController extends Controller
@@ -26,9 +27,17 @@ class PrivateMessageController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, PrivateRoom $privateRoom)
     {
-        //
+        $validated = $request->validate([
+            'message' => 'required|string',
+            'sender' => 'required|string',
+        ]);
+
+        $privateRoom->privateMessages()->create($validated);
+
+        return redirect()->route('private_rooms.show', $privateRoom)
+                         ->with('success', 'Message sent successfully.');
     }
 
     /**

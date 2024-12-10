@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\PrivateRoom;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
+use App\Models\Username;
 
 class PrivateRoomController extends Controller
 {
@@ -127,6 +129,14 @@ public function verify(Request $request)
      */
     public function destroy(PrivateRoom $privateRoom)
     {
-        //
+        if ($privateRoom->owner === Session::get('username')) {
+            // Delete the public room
+            $privateRoom->delete();
+
+            // Delete the username associated with the owner (without relationship)
+            //Username::where('username', $privateRoom->owner)->delete();
+
+            return redirect()->route('private0_rooms.index')->with('success', 'Private Room deleted successfully.');
+        }
     }
 }

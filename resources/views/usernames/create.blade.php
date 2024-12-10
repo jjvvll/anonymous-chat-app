@@ -9,7 +9,7 @@
 <form method="POST" action="{{ route('usernames.store') }}">
     @csrf
 
-  
+
 
     <div class="mb-4">
         <label for="username" class="block text-sm font-medium text-gray-700">Enter Username</label>
@@ -22,6 +22,10 @@
             required
         />
     </div>
+
+    <input type="hidden" name="room_type" value="{{ request('room_type', 'default_value') }}">
+
+    <input type="hidden" name="action_type" value="{{ request('action_type', 'default_value') }}">
 
     <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
         Generate Username
