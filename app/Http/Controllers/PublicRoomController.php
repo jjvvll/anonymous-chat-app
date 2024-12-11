@@ -73,9 +73,18 @@ class PublicRoomController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        $publicRoom = PublicRoom::findOrFail($id);
+        $publicRoom = PublicRoom::find($id);
+
+          // If the room does not exist
+          if (!$publicRoom) {
+              echo "<script>
+                  alert('The room has been deleted.');
+                  window.location.href='" . route('public_rooms.index') . "';
+              </script>";
+          exit;
+          }
 
         $messages = $publicRoom->messages()->latest()->get() ?? collect();
 

@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Console\Scheduling\Schedule;
+use App\Console\Commands\CleanupChatData; // Make sure this points to your cleanup command
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,8 +20,8 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+    public function boot(Schedule $schedule): void
     {
-        //
+        $schedule->command('cleanup:chat-data')->daily(); // Schedule this to run daily
     }
 }

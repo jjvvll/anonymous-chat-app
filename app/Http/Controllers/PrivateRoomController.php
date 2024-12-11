@@ -6,6 +6,7 @@ use App\Models\PrivateRoom;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Models\Username;
+use Illuminate\Support\Facades\Hash;
 
 class PrivateRoomController extends Controller
 {
@@ -66,7 +67,7 @@ class PrivateRoomController extends Controller
        PrivateRoom::create([
            'nickname' => $request->nickname, // Save the nickname if provided
             'owner'      => $username, // Use the fetched username as the owner
-            'password' => $request->password
+            'password' =>  Hash::make($request->password)
         ]);
 
         // Redirect back with a success message
@@ -95,15 +96,26 @@ public function verify(Request $request)
     }
 
     // Verify the password matches
-    if ($request->password !== $privateRoom->password) {
+    if (!Hash::check($request->password, $privateRoom->password)) {
         return back()->withErrors(['password' => 'Incorrect password for this room.']);
     }
 
     // Redirect to the room's page on success
     return redirect()->route('private_rooms.show', ['private_room' => $privateRoom->id]);
 }
-    public function show(PrivateRoom $privateRoom)
+    public function show( $id)
     {
+         // Attempt to find the room by ID
+        $privateRoom = PrivateRoom::find($id);
+
+        // If the room does not exist
+        if (!$privateRoom) {
+            echo "<script>
+                alert('The room has been deleted.');
+                window.location.href='" . route('private_rooms.index') . "';
+            </script>";
+        exit;
+        }
         $messages = $privateRoom->privateMessages()->latest()->get() ?? collect();
         return view('private_rooms.show', compact('privateRoom', 'messages'));
     }
@@ -136,7 +148,7 @@ public function verify(Request $request)
             // Delete the username associated with the owner (without relationship)
             //Username::where('username', $privateRoom->owner)->delete();
 
-            return redirect()->route('private0_rooms.index')->with('success', 'Private Room deleted successfully.');
+            return redirect()->route('private_rooms.index')->with('success', 'Private Room deleted successfully.');
         }
     }
 }

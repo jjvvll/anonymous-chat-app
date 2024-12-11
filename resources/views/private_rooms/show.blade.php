@@ -51,7 +51,15 @@
                             @endif
                             <!-- Message Bubble -->
                             <div class="bg-{{ $message->sender === session('username') ? 'blue' : 'gray' }}-200 p-3 rounded-lg shadow-md max-w-xs break-words">
-                                <p class="text-sm text-{{ $message->sender === session('username') ? 'white' : 'gray' }}-900">{{ $message->message }}</p>
+                                <p class="text-sm text-{{ $message->sender === session('username') ? 'white' : 'gray' }}-900">
+                                    @php
+                                        try {
+                                            echo Crypt::decryptString($message->message);
+                                        } catch (\Exception $e) {
+                                            echo "Message could not be decrypted.";
+                                        }
+                                    @endphp
+                                </p>
                             </div>
                         </div>
                     </div>
