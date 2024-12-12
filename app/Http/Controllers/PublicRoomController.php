@@ -91,7 +91,7 @@ class PublicRoomController extends Controller
         return view('public_rooms.show', compact('publicRoom', 'messages'));
     }
 
-    /**
+    /*****
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
