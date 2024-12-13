@@ -9,7 +9,7 @@
 
         @if(Session::get('username') === $privateRoom->owner)
             <!-- Only show the delete button if the user is the owner -->
-            <form action="{{ route('private_rooms.destroy', $privateRoom->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this room and the associated username?');">
+            <form action="{{ route('private_rooms.destroy', $privateRoom->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this room and the associated messages?');">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
