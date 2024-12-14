@@ -5,7 +5,7 @@
         <h1 class="text-2xl font-bold mb-4">Public Room: {{ $publicRoom->nickname }}</h1>
         <p><strong>Owner:</strong> {{ $publicRoom->owner ?? 'N/A' }}</p>
 
-        <!-- Add any additional information you'd like to display for the room -->
+        <!-- Add any additional information you'd like to display for the room------ -->
 
         @if(Session::get('username') === $publicRoom->owner)
             <!-- Only show the delete button if the user is the owner -->
